@@ -9,22 +9,23 @@
 
   <body class="bg-gray-100 min-h-screen flex flex-col">
     <!-- Navbar -->
-    <nav class="bg-indigo-600 shadow-md">
+    <nav class="bg-indigo-600 shadow-md" role="navigation">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16 items-center">
+        <div class="flex justify-between items-center h-16 flex-wrap">
           <!-- Logo -->
           <a href="{% url 'dashboard' %}" class="text-white text-xl font-bold tracking-wide">
             💰 Finance Tracker
           </a>
 
           <!-- Links -->
-          <div class="space-x-4">
+          <div class="flex flex-wrap items-center space-x-4 mt-2 sm:mt-0">
             {% if user.is_authenticated %}
-              <span class="text-indigo-100">Hello, <strong>{{ user.username }}</strong>!</span>
+              <span class="text-indigo-100 text-sm">Hello, <strong>{{ user.username }}</strong>!</span>
               <a href="{% url 'dashboard' %}" class="text-white hover:text-indigo-200 transition">Dashboard</a>
               <a href="{% url 'transaction_add' %}" class="text-white hover:text-indigo-200 transition">Add Transaction</a>
-              <a href="{% url 'transaction_list' %}" class="text-white hover:text-indigo-200 transition">List Transaction</a>
-              <a href="{% url 'logout' %}" class="bg-indigo-800 hover:bg-indigo-900 text-white px-3 py-1 rounded-md transition">
+              <a href="{% url 'transaction_list' %}" class="text-white hover:text-indigo-200 transition">List Transactions</a>
+              <a href="{% url 'goal_add' %}" class="text-white hover:text-indigo-200 transition">Add Goal</a>
+              <a href="{% url 'logout' %}" class="bg-indigo-800 hover:bg-indigo-900 text-white px-3 py-1 rounded-md transition" aria-label="Logout">
                 Logout
               </a>
             {% else %}
@@ -45,7 +46,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-indigo-700 text-center text-white py-3 mt-8">
+    <footer class="bg-indigo-700 text-center text-white py-4 mt-8">
       <p class="text-sm">&copy; {{ now|date:"Y" }} Finance Tracker. All rights reserved.</p>
     </footer>
   </body>

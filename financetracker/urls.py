@@ -21,4 +21,5 @@ urlpatterns = [
          name='password_reset_complete'),
     path('transactions/add/', views.TransactionCreateView.as_view(), name='transaction_add'),
     path('transactions/', views.TransactionListView.as_view(), name='transaction_list'),
+    path('goals/add/', views.GoalCreateView.as_view(), name='goal_add'),
 ]
