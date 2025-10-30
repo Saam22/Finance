@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>{% block title %}FINANCE{% endblock title %}</title>
+  </head>
+
+  <body class="bg-gray-100 min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <nav class="bg-indigo-600 shadow-md">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+          <!-- Logo -->
+          <a href="{% url 'dashboard' %}" class="text-white text-xl font-bold tracking-wide">
+            💰 Finance Tracker
+          </a>
+
+          <!-- Links -->
+          <div class="space-x-4">
+            {% if user.is_authenticated %}
+              <span class="text-indigo-100">Hello, <strong>{{ user.username }}</strong>!</span>
+              <a href="{% url 'dashboard' %}" class="text-white hover:text-indigo-200 transition">Dashboard</a>
+              <a href="{% url 'transaction_add' %}" class="text-white hover:text-indigo-200 transition">Add Transaction</a>
+              <a href="{% url 'transaction_list' %}" class="text-white hover:text-indigo-200 transition">List Transaction</a>
+              <a href="{% url 'logout' %}" class="bg-indigo-800 hover:bg-indigo-900 text-white px-3 py-1 rounded-md transition">
+                Logout
+              </a>
+            {% else %}
+              <a href="{% url 'login' %}" class="text-white hover:text-indigo-200 transition">Login</a>
+              <a href="{% url 'register' %}" class="bg-white text-indigo-600 px-3 py-1 rounded-md font-medium hover:bg-indigo-50 transition">
+                Register
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page Content -->
+    <main class="flex-grow container mx-auto px-4 py-8">
+      {% block content %}
+      {% endblock content %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-indigo-700 text-center text-white py-3 mt-8">
+      <p class="text-sm">&copy; {{ now|date:"Y" }} Finance Tracker. All rights reserved.</p>
+    </footer>
+  </body>
+</html>

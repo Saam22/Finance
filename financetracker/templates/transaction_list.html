@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Transactions{% endblock title %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-100 py-8 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold text-gray-900 mb-6">Your Transactions</h1>
+
+    <div class="grid gap-6 md:grid-cols-2">
+      {% for transaction in transactions %}
+      <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition-shadow duration-300">
+        <div class="flex justify-between items-center mb-2">
+          <h2 class="text-xl font-semibold text-gray-900">{{ transaction.title }}</h2>
+          <span class="text-sm text-gray-500">{{ transaction.date }}</span>
+        </div>
+        <p class="text-sm text-gray-600 mb-2">
+          Category: <span class="font-medium text-gray-800">{{ transaction.category }}</span>
+        </p>
+        <p class="text-sm mb-2">
+          Type: 
+          {% if transaction.transaction_type == "Income" %}
+            <span class="text-green-600 font-semibold">Credit</span>
+          {% else %}
+            <span class="text-red-600 font-semibold">Debit</span>
+          {% endif %}
+        </p>
+        <p class="text-lg font-bold text-gray-900">
+          Amount: 
+          {% if transaction.transaction_type == "Income" %}
+            +${{ transaction.amount }}
+          {% else %}
+            -${{ transaction.amount }}
+          {% endif %}
+        </p>
+      </div>
+      {% empty %}
+      <p class="text-center text-gray-500 col-span-2">No transactions found.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock content %}
