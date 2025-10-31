@@ -1,41 +1,81 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Add Goal{% endblock %}
 
 {% block content %}
-<div class="max-w-lg mx-auto bg-white shadow-md rounded-lg p-8 mt-10">
-  <h2 class="text-2xl font-bold mb-6 text-indigo-600 text-center">Add Your Goal</h2>
+<div class="max-w-lg mx-auto bg-white shadow-xl rounded-2xl p-8 mt-10 border border-gray-100">
+  
+  <!-- العنوان -->
+  <div class="text-center mb-8">
+    <h2 class="text-3xl font-extrabold text-indigo-600">🎯 Add Your Goal</h2>
+    <p class="text-gray-500 mt-2 text-sm">Set your financial target and stay on track</p>
+  </div>
 
-  <form method="post" class="space-y-4">
+  <form method="post" class="space-y-6">
     {% csrf_token %}
 
+    <!-- اسم الهدف -->
     <div>
-      {{ form.name.label_tag }}
-      {{ form.name }}
+      <label for="id_name" class="block text-sm font-medium text-gray-700 mb-1">Goal Name</label>
+      <div class="relative">
+        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-indigo-500">
+          <i class="fa-solid fa-bullseye"></i>
+        </span>
+        {{ form.name }}
+      </div>
       {% if form.name.errors %}
         <p class="text-red-500 text-sm mt-1">{{ form.name.errors.0 }}</p>
       {% endif %}
     </div>
 
+ <!-- الرصيد الحالي -->
+<div class="bg-gradient-to-r from-indigo-50 to-indigo-100 border border-indigo-200 rounded-md p-4 flex justify-between items-center shadow-sm">
+  <div class="flex items-center space-x-2">
+    <i class="fa-solid fa-wallet text-indigo-600 text-xl"></i>
+    <span class="text-gray-700 font-medium text-sm">Current Balance</span>
+  </div>
+  <span class="text-indigo-700 font-bold text-lg">
+    {{ current_balance }} $
+  </span>
+</div>
+
+    <!-- المبلغ المستهدف -->
     <div>
-      {{ form.target_amount.label_tag }}
-      {{ form.target_amount }}
+      <label for="id_target_amount" class="block text-sm font-medium text-gray-700 mb-1">Target Amount</label>
+      <div class="relative">
+        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-indigo-500">
+          <i class="fa-solid fa-coins"></i>
+        </span>
+        {{ form.target_amount }}
+      </div>
       {% if form.target_amount.errors %}
         <p class="text-red-500 text-sm mt-1">{{ form.target_amount.errors.0 }}</p>
       {% endif %}
     </div>
 
+    <!-- الموعد النهائي -->
     <div>
-      {{ form.deadline.label_tag }}
-      {{ form.deadline }}
+      <label for="id_deadline" class="block text-sm font-medium text-gray-700 mb-1">Deadline</label>
+      <div class="relative">
+        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-indigo-500">
+          <i class="fa-solid fa-calendar-day"></i>
+        </span>
+        {{ form.deadline }}
+      </div>
       {% if form.deadline.errors %}
         <p class="text-red-500 text-sm mt-1">{{ form.deadline.errors.0 }}</p>
       {% endif %}
     </div>
 
-    <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition font-semibold">
-      Save Goal
+    <!-- الزر -->
+    <button type="submit"
+      class="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 text-white py-3 px-4 rounded-lg font-semibold shadow-md hover:from-indigo-700 hover:to-indigo-800 transition">
+      💾 Save Goal
     </button>
   </form>
 </div>
+
+<!-- Font Awesome لأيقونات جميلة -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 {% endblock %}

@@ -6,6 +6,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from . models import Transaction , Goal
+from django.db.models import Sum
+from decimal import Decimal
+
 # Create your views here.
 def dashboard(request):
     return render(request, 'dashboard.html')
@@ -47,7 +50,31 @@ class LogoutView(View):
 
 class DashboardView(LoginRequiredMixin,View):
     def get(self, request, *args, **kwargs):
-        return render(request, 'dashboard.html')
+        transactions = Transaction.objects.filter(user=request.user)
+        goals =Goal.objects.filter(user=request.user)
+        total_income = transactions.filter(transaction_type='Income').aggregate(Sum('amount'))['amount__sum'] or 0
+        total_expense = transactions.filter(transaction_type='Expense').aggregate(Sum('amount'))['amount__sum'] or 0
+        balance = total_income - total_expense
+        remaning_save = balance
+        goal_progress = []        
+        for goal in goals:
+            if remaning_save>=goal.target_amount:
+                goal_progress.append({'goal': goal, 'progress': 100})
+                remaning_save -= goal.target_amount
+            elif remaning_save>0:
+                progress= (remaning_save/goal.target_amount)*100    
+                goal_progress.append({'goal': goal, 'progress': progress})
+                remaning_save = 0
+            else:
+                goal_progress.append({'goal': goal, 'progress': 0})
+        context={
+            'transactions':transactions,
+            'total_income':total_income,
+            'total_expense':total_expense,
+            'balance':balance,
+            'goal_progress':goal_progress
+        }
+        return render(request, 'dashboard.html', context)
     
 class TransactionCreateView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
@@ -68,17 +95,28 @@ class TransactionListView(LoginRequiredMixin, View):
         transactions = Transaction.objects.all()
         return render(request, 'transaction_list.html', {'transactions': transactions})
     
+from django.db.models import Sum
+from .models import Transaction  # بافتراض إن عندك موديل للعمليات المالية
+
 class GoalCreateView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         form = GoalForm()
-        return render(request, 'goal_form.html', {'form': form})
+        # حساب الرصيد الحالي للمستخدم
+        current_balance = Transaction.objects.filter(user=request.user).aggregate(
+            total=Sum('amount')
+        )['total'] or 0
+        return render(request, 'goal_form.html', {'form': form, 'current_balance': current_balance})
 
     def post(self, request, *args, **kwargs):
         form = GoalForm(request.POST)
+        current_balance = Transaction.objects.filter(user=request.user).aggregate(
+            total=Sum('amount')
+        )['total'] or 0
+
         if form.is_valid():
-            transaction = form.save(commit=False)
-            transaction.user = request.user
-            transaction.save()
+            goal = form.save(commit=False)
+            goal.user = request.user
+            goal.save()
             return redirect('dashboard')
-        return render(request, 'goal_form.html', {'form': form})
-    
+
+        return render(request, 'goal_form.html', {'form': form, 'current_balance': current_balance})
