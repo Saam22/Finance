@@ -1,6 +1,7 @@
 from django.urls import path    
 from . import views
 from django.contrib.auth import views as auth_views
+from .views import export_transactions
 
 urlpatterns = [
     path('dashboard/', views.DashboardView.as_view(), name='dashboard'),
@@ -22,4 +23,5 @@ urlpatterns = [
     path('transactions/add/', views.TransactionCreateView.as_view(), name='transaction_add'),
     path('transactions/', views.TransactionListView.as_view(), name='transaction_list'),
     path('goals/add/', views.GoalCreateView.as_view(), name='goal_add'),
+    path('generate_report/', export_transactions, name='export_transactions'),
 ]

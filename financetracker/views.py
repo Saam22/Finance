@@ -1,4 +1,4 @@
-from django.shortcuts import render , redirect
+from django.shortcuts import render , redirect ,HttpResponse
 from django.views import View
 from financetracker.forms import RegisterForm , TransactionForm , GoalForm
 from django.contrib.auth import login ,logout
@@ -8,6 +8,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from . models import Transaction , Goal
 from django.db.models import Sum
 from decimal import Decimal
+from .admin import TransactionResource
 
 # Create your views here.
 def dashboard(request):
@@ -120,3 +121,12 @@ class GoalCreateView(LoginRequiredMixin, View):
             return redirect('dashboard')
 
         return render(request, 'goal_form.html', {'form': form, 'current_balance': current_balance})
+
+def export_transactions(request):
+    user_transactions = Transaction.objects.filter(user=request.user)
+    transaction_resource = TransactionResource()
+    dataset=transaction_resource.export(queryset=user_transactions)
+    excel_data = dataset.export('xlsx')
+    response = HttpResponse(excel_data, content_type='application/vnd.ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="transactions.xlsx"'
+    return response
